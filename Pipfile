@@ -21,6 +21,8 @@ flask = "*"
 hugchat = "*"
 exceptiongroup = "*"
 urllib3 = "*"
+watchdog = "*"
+async-timeout = "*"
 
 [dev-packages]
 
