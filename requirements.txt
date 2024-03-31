@@ -90,7 +90,6 @@ typing_extensions==4.10.0
 tzdata==2024.1
 urllib3==2.2.1
 watchdog==4.0.0
-weasyprint==61.2
 webencodings==0.5.1
 yarl==1.9.4
 zopfli==0.2.3
