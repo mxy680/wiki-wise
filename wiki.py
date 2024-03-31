@@ -13,14 +13,17 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_openai import OpenAI
-from pyhtml2pdf import converter
 from supabase import create_client
+import convertapi
 
 # Load environment variables from .env file
 load_dotenv()
 
 # Create Supabase client
 supabase_client = create_client(os.getenv('SUPABASE_URL'), os.getenv('SUPABASE_KEY'))
+
+# Configure convert api
+convertapi.api_secret = os.getenv('CONVERT_API_KEY')
 
 
 def get_url(topic: str):
@@ -78,7 +81,9 @@ def save_url_as_pdf(url: str, topic: str):
     output_path = f"documents/{topic}.pdf"
     
     # Convert URL to PDF
-    converter.convert(url, output_path)
+    convertapi.convert('pdf', {
+        'Url': url,
+    }, from_format = 'web').save_files(output_path)
     
     # Upload the PDF to Supabase storage
     with open(output_path, 'rb') as f:
