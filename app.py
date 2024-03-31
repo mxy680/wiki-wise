@@ -2,12 +2,12 @@
 import streamlit as st
 import wiki
 import textwrap
-import os
+
 
 # Function to mimic response from an AI (placeholder)
 def get_answer(question: str):
     # Retrieve answer from Wiki module based on the question and selected topic
-    answer = wiki.ask(question, st.session_state.get('selected_topic'))['result'].strip()
+    answer = wiki.ask(question, st.session_state.get('wiki_url'))['result'].strip()
     
     # Wrap the answer into lines of 80 characters for better display
     wrapped_lines = textwrap.wrap(answer, width=80)
@@ -17,8 +17,8 @@ def get_answer(question: str):
 def main_chat():
     # Set up the title and display selected topic and Wiki URL
     st.title("Chat with WikiWise")
-    st.write(f"Topic: {st.session_state.get('selected_topic', '')}")
-    st.write(f"Wiki URL: {st.session_state.get('wiki_url', '')}")
+    st.write(f"Topic: {st.session_state.get('selected_topic')}")
+    st.write(f"Wiki URL: {st.session_state.get('wiki_url')}")
 
     # Create a form for user input
     with st.form(key="chat_form"):
@@ -62,7 +62,7 @@ def topic_entry():
                 return
             
             # Save the Wikipedia page as a PDF and set session state variables
-            path = wiki.save_url_as_pdf(url, topic)
+            path = wiki.save_url_as_pdf(url)
             st.session_state.update({'display_main_chat': True, 'selected_topic': topic, 'chat_history': [], 'wiki_url': url})
             st.rerun()
         else:

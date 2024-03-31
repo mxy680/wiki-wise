@@ -74,10 +74,12 @@ def get_url(topic: str):
     return wiki_url
 
 
-def save_url_as_pdf(url: str, topic: str):
+def save_url_as_pdf(url: str):
     """
     Save the Wikipedia page as a PDF and upload it to Supabase storage.
     """
+    # Get the topic from the URL and set the output path
+    topic = url.split('/')[-1]
     output_path = f"documents/{topic}.pdf"
     
     # Convert URL to PDF
@@ -85,14 +87,22 @@ def save_url_as_pdf(url: str, topic: str):
         'Url': url,
     }, from_format = 'web').save_files(output_path)
     
+    # Check if the PDF was created successfully
+    if not os.path.exists(output_path):
+        raise Exception("PDF creation failed.")
+    
+    # Check all the files in the supabase storage bucket 'wikiwise/documents'
+    files = supabase_client.storage.from_('wikiwise').list('documents')
+    found = False
+    for file in files:
+        if file['name'] == f"{topic}.pdf":
+            found = True
+            break            
+        
     # Upload the PDF to Supabase storage
-    with open(output_path, 'rb') as f:
-        try:
-            supabase_client.storage.from_("wikiwise").upload(file=f, path=f"documents/{topic}.pdf")
-        except:
-            pass
-            
-    # Delete the PDF from the local directory
+    if not found:
+        supabase_client.storage.from_('wikiwise').upload(f"documents/{topic}.pdf", output_path)    
+    
     os.remove(output_path)
         
     return output_path  
@@ -110,10 +120,13 @@ def get_answer(vectorstore, question: str) -> str:
     return answer
         
         
-def ask(question: str, topic: str) -> str:
+def ask(question: str, url: str) -> str:
     """
     Ask a question about the Wikipedia page using local directories for storing vector stores (testing).
     """
+    # Get the topic from the URL
+    topic = url.split('/')[-1]
+        
     # Download the PDF document from Supabase storage
     res = supabase_client.storage.from_('wikiwise').download(path=f"documents/{topic}.pdf")
     with open(f"documents/{topic}.pdf", 'wb') as f:
@@ -136,3 +149,17 @@ def ask(question: str, topic: str) -> str:
     
     # Get the answer to the question using the vector store
     return get_answer(vectorstore, question)
+
+if __name__ == "__main__":
+    # Test the functions
+    topic = "Monkeys"
+    #url = get_url(topic)
+    url = "https://en.wikipedia.org/wiki/Monkey"
+    print(f"URL for topic '{topic}': {url}")
+    
+    pdf_path = save_url_as_pdf(url)
+    print(f"PDF saved at: {pdf_path}")
+    
+    question = "What do monkeys eat?"
+    answer = ask(question, url)
+    print(f"Answer to '{question}': {answer}")
