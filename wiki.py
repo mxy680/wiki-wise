@@ -78,7 +78,8 @@ def save_url_as_pdf(url: str, topic: str):
     output_path = f"documents/{topic}.pdf"
     
     # Convert URL to PDF
-    pdfkit.from_url(url, output_path)
+    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
+    pdfkit.from_url(url, output_path, configuration=config)
     
     # Upload the PDF to Supabase storage
     with open(output_path, 'rb') as f:
