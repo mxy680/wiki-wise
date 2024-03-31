@@ -20,6 +20,7 @@ weasyprint = "*"
 flask = "*"
 hugchat = "*"
 exceptiongroup = "*"
+urllib3 = "*"
 
 [dev-packages]
 
