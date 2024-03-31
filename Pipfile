@@ -19,6 +19,7 @@ pdfkit = "*"
 weasyprint = "*"
 flask = "*"
 hugchat = "*"
+exceptiongroup = "*"
 
 [dev-packages]
 
