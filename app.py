@@ -2,6 +2,7 @@
 import streamlit as st
 import wiki
 import textwrap
+import os
 
 # Function to mimic response from an AI (placeholder)
 def get_answer(question: str):
@@ -30,6 +31,7 @@ def main_chat():
     # Button to go back to the home screen
     if st.button("Back to Home"):
         st.session_state.update({'display_main_chat': False, 'selected_topic': '', 'chat_history': []})
+        os.remove(st.session_state.get('document_path'))
         st.rerun()
         
     # Display chat history
