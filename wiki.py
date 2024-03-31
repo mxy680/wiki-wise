@@ -19,7 +19,7 @@ from langchain.chains import RetrievalQA
 from langchain_openai import OpenAI
 
 from tools import tools
-import weasyprint
+import pdfkit
 from pinecone import Pinecone
 
 # Initialize Pinecone and OpenAI
@@ -72,10 +72,7 @@ def save_url_as_pdf(url: str, topic: str):
     if os.path.exists(output_path):
         return output_path
     
-    pdf = weasyprint.HTML(url).write_pdf()
-    # Create the pdf file
-    with open(output_path, 'wb') as f:
-        f.write(pdf)
+    pdfkit.from_url(url, output_path)
         
     return output_path
 
