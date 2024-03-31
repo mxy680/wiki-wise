@@ -13,7 +13,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain_openai import OpenAI
-import pdfkit
+from pyhtml2pdf import converter
 from supabase import create_client
 
 # Load environment variables from .env file
@@ -78,8 +78,7 @@ def save_url_as_pdf(url: str, topic: str):
     output_path = f"documents/{topic}.pdf"
     
     # Convert URL to PDF
-    config = pdfkit.configuration(wkhtmltopdf='/usr/local/bin/wkhtmltopdf')
-    pdfkit.from_url(url, output_path, configuration=config)
+    converter.convert(url, output_path)
     
     # Upload the PDF to Supabase storage
     with open(output_path, 'rb') as f:
