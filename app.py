@@ -6,7 +6,7 @@ import os
 
 # Function to mimic response from an AI (placeholder)
 def get_answer(question: str):
-    answer = wiki.ask(st.session_state.get('document_path'), question, st.session_state.get('selected_topic'))['result'].strip()
+    answer = wiki.ask(question, st.session_state.get('selected_topic'))['result'].strip()
     wrapped_lines = textwrap.wrap(answer, width=80)
     return '\n'.join(wrapped_lines)
 
@@ -31,7 +31,6 @@ def main_chat():
     # Button to go back to the home screen
     if st.button("Back to Home"):
         st.session_state.update({'display_main_chat': False, 'selected_topic': '', 'chat_history': []})
-        os.remove(st.session_state.get('document_path'))
         st.rerun()
         
     # Display chat history
@@ -55,7 +54,7 @@ def topic_entry():
             path = wiki.save_url_as_pdf(url, topic)
             
             
-            st.session_state.update({'display_main_chat': True, 'selected_topic': topic, 'chat_history': [], 'wiki_url': url, 'document_path': path})
+            st.session_state.update({'display_main_chat': True, 'selected_topic': topic, 'chat_history': [], 'wiki_url': url})
             st.rerun()
         else:
             st.error("Please enter a topic to continue.")
