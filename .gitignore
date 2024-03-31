@@ -23,3 +23,5 @@
 *.swp
 # Ignore .env file
 .env
+/.vscode
+/__pycache__
